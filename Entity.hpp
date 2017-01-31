@@ -17,10 +17,10 @@ public:
 	Entity(Type t = Type::Ground);
 	Entity(b2Body*, Type);
 	~Entity();
-	const Entity& setBodyPointer(b2Body*);
+	void setBodyPointer(b2Body*);
 	b2Body* getBody() const; 
-	const Entity& setType(const Type t);
-	const Type getType();
+	void setType(const Type t);
+	const Type getType() const; 
 private:
 	b2Body* bodyPointer = nullptr;
 	Type type = Type::Ground;

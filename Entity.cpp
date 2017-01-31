@@ -15,10 +15,9 @@ Entity::~Entity()
 {
 }
 
-const Entity& Entity::setBodyPointer(b2Body* ptr)
+void Entity::setBodyPointer(b2Body* ptr)
 {
 	bodyPointer = ptr;
-	return *this;
 }
 
 b2Body* Entity::getBody() const
@@ -26,12 +25,11 @@ b2Body* Entity::getBody() const
 	return bodyPointer;
 }
 
-const Entity& Entity::setType(const Type t)
+void Entity::setType(const Type t)
 {
 	type = t;
-	return *this;
 }
-const Type Entity::getType()
+const Type Entity::getType() const
 {
 	return type;
 }
