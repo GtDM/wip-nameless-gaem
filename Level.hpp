@@ -10,9 +10,9 @@
 class Level
 {
 public:
-	Level(std::string n = "default_map");
-	Level(b2World& world, std::ifstream& in, std::string n = "default_map");
-	Level(b2World& world, std::string path, std::string n = "default_map");
+	Level(b2World& world, std::string n);
+	Level(b2World& world, std::ifstream& in, std::string n);
+	Level(b2World& world, std::string path, std::string n);
 	~Level();
 	void loadFromStream(b2World&, std::ifstream& in);
 	void loadFromFile(b2World&, std::string path);

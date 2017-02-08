@@ -16,14 +16,20 @@ class Entity: public sf::RectangleShape
 public:
 	Entity(Type t = Type::Ground);
 	Entity(b2Body*, Type);
-	~Entity();
+	~Entity() = default;
 	void setBodyPointer(b2Body*);
 	b2Body* getBody() const; 
 	void setType(const Type t);
 	const Type getType() const; 
+	const bool hasJumpLeft() const;
+	void resetJumpNumber();
+	void jump();
+	void moveLeft();
+	void moveRight();
 private:
 	b2Body* bodyPointer = nullptr;
 	Type type = Type::Ground;
+	int current_jump_number = 0;
 };
 
 void createNewEntity(b2World&, sf::Vector2f, sf::Vector2f, std::vector<Entity>&, Type);

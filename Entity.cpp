@@ -11,10 +11,6 @@ Entity::Entity(b2Body* ptr, Type t = Type::Ground)
 	type = t;
 }
 
-Entity::~Entity()
-{
-}
-
 void Entity::setBodyPointer(b2Body* ptr)
 {
 	bodyPointer = ptr;
@@ -34,13 +30,40 @@ const Type Entity::getType() const
 	return type;
 }
 
+const bool Entity::hasJumpLeft() const
+{
+	return current_jump_number > 1;
+}
+
+void Entity::resetJumpNumber()
+{
+	constexpr static int maxJumpNumber = 2;
+	current_jump_number = maxJumpNumber;
+}
+
+void Entity::jump()
+{
+	bodyPointer->ApplyLinearImpulse( b2Vec2(0,-10), bodyPointer->GetWorldCenter(), true);
+	current_jump_number--;
+}
+
+void Entity::moveLeft()
+{
+	bodyPointer->ApplyLinearImpulse( b2Vec2(-0.25f,0), bodyPointer->GetWorldCenter(), true);
+}
+
+void Entity::moveRight()
+{
+	bodyPointer->ApplyLinearImpulse( b2Vec2(0.25f,0), bodyPointer->GetWorldCenter(), true);
+}
+
 void createNewEntity(b2World& world, sf::Vector2f size, sf::Vector2f position, std::vector<Entity>& v, Type t)
 {
 	Entity entity{t};
 	b2BodyDef bodyDef;
-    bodyDef.position = b2Vec2(position.x/SCALE, position.y/SCALE);
+	bodyDef.position = b2Vec2(position.x/SCALE, position.y/SCALE);
 	b2PolygonShape shape;
-    shape.SetAsBox((size.x/2)/SCALE, (size.y/2)/SCALE);
+	shape.SetAsBox((size.x/2)/SCALE, (size.y/2)/SCALE);
 	b2FixtureDef fixtureDef;
 	fixtureDef.shape = &shape;
 	switch(t)
@@ -78,8 +101,6 @@ void createNewEntity(b2World& world, sf::Vector2f size, sf::Vector2f position, s
 	entity.setOrigin(size.x/2, size.y/2);
 	entity.setPosition(position);
 	v.push_back(entity);
-	
-
 }
 
 
