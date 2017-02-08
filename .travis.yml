@@ -4,9 +4,11 @@ compiler: clang
 script: 
   - make
   - ./wip-nameless-gaem
+sources:
+  - llvm-toolchain-precise-3.6
 addons:
   apt:
     packages:
-    - clang
+    - clang-3.6
     - libsfml-dev
     - libbox2d-dev
