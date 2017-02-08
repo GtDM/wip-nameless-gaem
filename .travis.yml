@@ -1,0 +1,12 @@
+sudo: false
+language: cpp
+compiler: clang
+script: 
+  - make
+  - ./wip-nameless-gaem
+addons:
+  apt:
+    packages:
+    - clang
+    - libsfml-dev
+    - libbox2d-dev
