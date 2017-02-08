@@ -5,10 +5,10 @@ script:
   - make
   - ./wip-nameless-gaem
 sources:
-  - llvm-toolchain-precise-3.6
+  - llvm-toolchain-precise-3.8
 addons:
   apt:
     packages:
-    - clang-3.6
+    - clang-3.8
     - libsfml-dev
     - libbox2d-dev
