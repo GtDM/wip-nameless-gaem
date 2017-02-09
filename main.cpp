@@ -31,7 +31,18 @@ int main()
 	b2World world(gravity);
 	Level currentLevel(world, "default_level");
 	Entity* player = &currentLevel.heroes[0];
-	sf::Clock jumpTime, debugTime; ///Tymczasowe, powinno być w klasie Entity lub inaczej rozwiązane
+	player->setFillColor(sf::Color::Magenta);
+	sf::Clock jumpTime; ///Tymczasowe, powinno być w klasie Entity lub inaczej rozwiązane
+#ifdef DEBUG
+	sf::Clock debugTime;
+	sf::Vector2f builderSize{50, 100};
+	Type builderType = Type::Ground;
+	std::vector<Entity>* builderVector = &currentLevel.grounds;
+	sf::RectangleShape builderIndicator;
+	builderIndicator.setSize(builderSize);
+	builderIndicator.setFillColor(sf::Color{0, 0, 100, 120});
+	builderIndicator.setOrigin(builderSize.x / 2, builderSize.y / 2);
+#endif //DEBUG
 	while(window.isOpen())
 	{
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
@@ -46,16 +57,16 @@ int main()
 #ifdef DEBUG
 		if(debugTime.getElapsedTime() > sf::milliseconds(500))
 		{
-			if(sf::Keyboard::isKeyPressed(sf::Keyboard::C))
+			sf::Vector2f mouse_position(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y);
+			builderIndicator.setPosition(mouse_position);
+			if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
 			{
-				sf::Vector2f position(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y);
-				createNewEntity(world, {50, 100}, position, currentLevel.grounds, Type::Ground);
-				debugTime.restart();
-			}
-			if(sf::Keyboard::isKeyPressed(sf::Keyboard::V))
-			{
-				sf::Vector2f position(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y);
-				createNewEntity(world, {100, 10}, position, currentLevel.grounds, Type::Ground);
+				createNewEntity(world, builderSize, mouse_position, *builderVector, builderType);
+				if(builderType == Type::Hero)
+				{
+					player = &currentLevel.heroes[0];
+					player->setFillColor(sf::Color::Magenta);
+				}
 				debugTime.restart();
 			}
 			if(sf::Keyboard::isKeyPressed(sf::Keyboard::B))
@@ -67,7 +78,47 @@ int main()
 			{
 				currentLevel.loadFromFile(world, "levels/map1.ams");
 				player = &currentLevel.heroes[0];
+				player->setFillColor(sf::Color::Magenta);
 				debugTime.restart();
+			}
+			if(sf::Keyboard::isKeyPressed(sf::Keyboard::M))
+			{
+				if(builderType == Type::Hero)
+				{
+					builderType = Type::Ground;
+					builderVector = &currentLevel.grounds;
+					builderIndicator.setFillColor(sf::Color{0, 0, 100, 120});
+				}
+				else
+				{
+					builderType = Type::Hero;
+					builderVector = &currentLevel.heroes;
+					builderIndicator.setFillColor(sf::Color{100, 0, 0, 120});
+				}
+			}
+			if(sf::Keyboard::isKeyPressed(sf::Keyboard::LBracket))
+			{
+				builderSize.x -= 16;
+				builderIndicator.setSize(builderSize);
+				builderIndicator.setOrigin(builderSize.x / 2, builderSize.y / 2);
+			}
+			if(sf::Keyboard::isKeyPressed(sf::Keyboard::RBracket))
+			{
+				builderSize.x += 16;
+				builderIndicator.setSize(builderSize);
+				builderIndicator.setOrigin(builderSize.x / 2, builderSize.y / 2);
+			}
+			if(sf::Keyboard::isKeyPressed(sf::Keyboard::Comma))
+			{
+				builderSize.y -= 16;
+				builderIndicator.setSize(builderSize);
+				builderIndicator.setOrigin(builderSize.x / 2, builderSize.y / 2);
+			}
+			if(sf::Keyboard::isKeyPressed(sf::Keyboard::Period))
+			{
+				builderSize.y += 16;
+				builderIndicator.setSize(builderSize);
+				builderIndicator.setOrigin(builderSize.x / 2, builderSize.y / 2);
 			}
 		}
 #endif
@@ -78,6 +129,9 @@ int main()
 		world.Step(1/60.f, 8, 3);
 		manageCollision(currentLevel);
 		window.clear();
+#ifdef DEBUG
+		window.draw(builderIndicator);
+#endif
 		drawLevel(currentLevel, window);
 		window.display();
 	}
