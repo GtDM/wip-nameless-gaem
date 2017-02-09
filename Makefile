@@ -1,4 +1,4 @@
-CC = clang++
+CC ?= clang++
 CFLAGS  = -g -O0 -std=c++14 -Wall
 
 default: noname
