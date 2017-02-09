@@ -2,8 +2,6 @@ language: cpp
 sudo: false
 dist: precise
 compiler: clang
-before_install:
-  - sudo apt-get update -qq
 script: 
   - make CC=$COMPILER
   - ./wip-nameless-gaem
