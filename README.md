@@ -12,12 +12,14 @@ It's a work in progress, it has no name and it might turn out to be a gaem.
 - ./wip-nameless-gaem
 
 #Controls in current build:
-- WASD - Movement
-- CV - Place static boxes of two predefined sizes in cursor's location
+- WAD - Movement
+- Left Mouse Button - Place an Entity
 - B - Save current map to file "levels/map1.ams"
 - N - Load map "levels/map1.ams"
+- M - Change a Type of the Entity
+- ,.[] - Change a Size of the Entity
 
-Currently loading a map that doesn't exist is not recommended and the main red rectangle spawns in the same location every time
+Currently loading a map that doesn't exist is not recommended
 
 That build status will keep failing until someone will link box2d and sfml inside the project
 
