@@ -1,7 +1,10 @@
 #ifndef DEBUG_HPP
 #define DEBUG_HPP
 
-#include "Drawable.hpp" // Base class: sf::Drawable
+#include <SFML/Graphics.hpp>
+#include <Box2D/Box2D.h>
+#include "Entity.hpp"
+#include "Level.hpp"
 
 class Debug : public sf::Drawable
 {
@@ -10,12 +13,19 @@ class Debug : public sf::Drawable
 public:
 	static Debug* Instance();
 	static void Release();
-	void handleEvents();
+	void handleEvents(b2World& world, Entity* player);
+	bool isOnCooldown();
+	void setLevel(Level* level);
 
 private:
 	Debug();
 	~Debug();
-	virtual void draw(RenderTarget& target, RenderStates states) const;
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+	sf::Clock debugTime;
+	sf::Vector2f builderSize{32, 32};
+	Type builderType{Type::Ground};
+	sf::RectangleShape builderIndicator{builderSize};
+	Level* levelPointer;
 };
 
 #endif // DEBUG_HPP

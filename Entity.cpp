@@ -30,9 +30,9 @@ const Type Entity::getType() const
 	return type;
 }
 
-const bool Entity::hasJumpLeft() const
+const bool Entity::canJump(sf::Clock& jumpTime) const
 {
-	return current_jump_number > 1;
+	return current_jump_number > 1 && jumpTime.getElapsedTime() > sf::milliseconds(500);
 }
 
 void Entity::resetJumpNumber()
@@ -41,10 +41,11 @@ void Entity::resetJumpNumber()
 	current_jump_number = maxJumpNumber;
 }
 
-void Entity::jump()
+void Entity::jump(sf::Clock& jumpTime)
 {
 	bodyPointer->ApplyLinearImpulse( b2Vec2(0,-10), bodyPointer->GetWorldCenter(), true);
 	current_jump_number--;
+	jumpTime.restart();
 }
 
 void Entity::moveLeft()

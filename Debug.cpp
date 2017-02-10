@@ -5,6 +5,8 @@ Debug* Debug::ms_instance = NULL;
 
 Debug::Debug()
 {
+	builderIndicator.setFillColor(sf::Color{0, 0, 100, 120});
+	builderIndicator.setOrigin(builderSize.x / 2, builderSize.y / 2);
 }
 
 Debug::~Debug()
@@ -27,12 +29,86 @@ void Debug::Release()
 	ms_instance = NULL;
 }
 
-void Debug::draw(RenderTarget& target, RenderStates states) const
+void Debug::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	
+	target.draw(builderIndicator, states);
 }
 
-void Debug::handleEvents()
+void Debug::handleEvents(b2World& world, Entity* player)
 {
-	
+	sf::Vector2f mouse_position(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y);
+	builderIndicator.setPosition(mouse_position);
+	if(sf::Keyboard::isKeyPressed(sf::Keyboard::B))
+	{
+		levelPointer->saveToFile("levels/map1.ams"); /// .ams == Awful Map System
+		debugTime.restart();
+	}
+	if(sf::Keyboard::isKeyPressed(sf::Keyboard::N))
+	{
+		levelPointer->loadFromFile(world, "levels/map1.ams");
+		player = &levelPointer->heroes[0];
+		player->setFillColor(sf::Color::Magenta);
+		debugTime.restart();
+	}
+	if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		if(builderType == Type::Hero)
+		{
+			createNewEntity(world, builderSize, mouse_position, levelPointer->heroes, Type::Hero);
+			player = &levelPointer->heroes[0];
+			player->setFillColor(sf::Color::Magenta);
+		}
+		else
+		{
+			createNewEntity(world, builderSize, mouse_position, levelPointer->grounds, Type::Ground);
+		}
+		debugTime.restart();
+	}
+	if(sf::Keyboard::isKeyPressed(sf::Keyboard::M))
+	{
+		if(builderType == Type::Hero)
+		{
+			builderType = Type::Ground;
+			builderIndicator.setFillColor(sf::Color{0, 0, 100, 120});
+		}
+		else
+		{
+			builderType = Type::Hero;
+			builderIndicator.setFillColor(sf::Color{100, 0, 0, 120});
+		}
+	}
+	if(sf::Keyboard::isKeyPressed(sf::Keyboard::LBracket) && builderSize.x > 32)
+	{
+		builderSize.x -= 32;
+		builderIndicator.setSize(builderSize);
+		builderIndicator.setOrigin(builderSize.x / 2, builderSize.y / 2);
+	}
+	if(sf::Keyboard::isKeyPressed(sf::Keyboard::RBracket))
+	{
+		builderSize.x += 32;
+		builderIndicator.setSize(builderSize);
+		builderIndicator.setOrigin(builderSize.x / 2, builderSize.y / 2);
+	}
+	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Comma) && builderSize.y > 32)
+	{
+		builderSize.y -= 32;
+		builderIndicator.setSize(builderSize);
+		builderIndicator.setOrigin(builderSize.x / 2, builderSize.y / 2);
+	}
+	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Period))
+	{
+		builderSize.y += 32;
+		builderIndicator.setSize(builderSize);
+		builderIndicator.setOrigin(builderSize.x / 2, builderSize.y / 2);
+	}
+}
+
+bool Debug::isOnCooldown()
+{
+	return debugTime.getElapsedTime() < sf::milliseconds(500);
+}
+
+void Debug::setLevel(Level* level_pointer)
+{
+	levelPointer = level_pointer;
 }
