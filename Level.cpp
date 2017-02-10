@@ -5,10 +5,14 @@ Level::Level(b2World& world, std::string n)
 	std::ifstream in("levels/default.ams");
 	if(!in)
 	{	
-		createNewEntity(world, {32, 32}, {100, 100}, heroes, Type::Hero);
+		createNewEntity(world, {32, 32}, {748.782, 778.55}, heroes, Type::Hero);
+		createNewEntity(world, {50, 68}, {1237, 440.55}, heroes, Type::Hero);
 		createNewEntity(world, {800, 10}, {800, 800}, grounds, Type::Ground);
-		createNewEntity(world, {100, 10}, {200, 700}, grounds, Type::Ground);
-		createNewEntity(world, {50, 100}, {1000, 700}, grounds, Type::Ground);
+		createNewEntity(world, {18, 100}, {546, 690}, grounds, Type::Ground);
+		createNewEntity(world, {18, 20}, {551, 593}, grounds, Type::Ground);
+		createNewEntity(world, {14, 284}, {1027, 498}, grounds, Type::Ground);
+		createNewEntity(world, {306, 16}, {1158, 481}, grounds, Type::Ground);
+		createNewEntity(world, {178, 16}, {1277, 688}, grounds, Type::Ground);
 		saveToFile("levels/default.ams");
 	}
 	else 
@@ -38,7 +42,7 @@ void Level::loadFromStream(b2World& world, std::ifstream& in)
 {
 	heroes.clear();
 	grounds.clear();
-	for(b2Body* next = world.GetBodyList(); next != nullptr;)
+	for(b2Body* next = world.GetBodyList(); next != nullptr;) ///TODO This loop looks ugly
 	{
 		b2Body* entity = next;
 		next = next->GetNext();
@@ -108,17 +112,38 @@ const std::string Level::getName() const
 	return name;
 }
 
-void drawLevel(Level level, sf::RenderWindow& window)
+void Level::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	for(Entity& entity : level.grounds)
+	for(const auto& entity : grounds)
 	{
-		entity.setPosition(SCALE * entity.getBody()->GetPosition().x, SCALE * entity.getBody()->GetPosition().y);
-		window.draw(entity);
+		target.draw(entity, states);
 	}
-	for(Entity& entity : level.heroes)
+	for(const auto& entity : heroes)
 	{
-		entity.setPosition(SCALE * entity.getBody()->GetPosition().x, SCALE * entity.getBody()->GetPosition().y);
-		window.draw(entity);
+		target.draw(entity, states);
 	}
 }
 
+void Level::update()
+{
+	for(auto& entity : grounds)
+		entity.setPosition(SCALE * entity.getBody()->GetPosition().x, SCALE * entity.getBody()->GetPosition().y);
+	for(auto& entity : heroes)
+		entity.setPosition(SCALE * entity.getBody()->GetPosition().x, SCALE * entity.getBody()->GetPosition().y);
+	manageCollision();
+}
+
+void Level::manageCollision()
+{
+	for(auto &x : heroes)
+	{
+		b2Fixture* fixtureIterator = x.getBody()->GetFixtureList();
+		for(const auto &y : grounds)
+		{
+			if(b2TestOverlap(fixtureIterator->GetAABB(0), y.getBody()->GetFixtureList()->GetAABB(0))) ///TODO sensors
+			{
+				x.resetJumpNumber();
+			}
+		}
+	}
+}

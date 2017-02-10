@@ -5,41 +5,23 @@
 #include "Entity.hpp"
 #include "Level.hpp"
 
-#define DEBUG
-
-void manageCollision(Level& level)
-{
-	for(auto &x : level.heroes)
-	{
-		b2Fixture* fixtureIterator = x.getBody()->GetFixtureList();
-		for(const auto &y : level.grounds)
-		{
-			///Powinno używać sensorów
-			if(b2TestOverlap(fixtureIterator->GetAABB(0), y.getBody()->GetFixtureList()->GetAABB(0)))
-			{
-				x.resetJumpNumber();
-			}
-		}
-	}
-}
+#define DEBUG ///TODO Debug class
 
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(1600, 900), "Test");
 	window.setFramerateLimit(60);
-	b2Vec2 gravity(0.f, 9.8f);
-	b2World world(gravity);
+	b2World world(b2Vec2{0.f, 9.8f});
 	Level currentLevel(world, "default_level");
 	Entity* player = &currentLevel.heroes[0];
 	player->setFillColor(sf::Color::Magenta);
-	sf::Clock jumpTime; ///Tymczasowe, powinno być w klasie Entity lub inaczej rozwiązane
+	sf::Clock jumpTime; ///Temporary, should be in Entity or solved differently
 #ifdef DEBUG
 	sf::Clock debugTime;
-	sf::Vector2f builderSize{50, 100};
+	sf::Vector2f builderSize{32, 32};
 	Type builderType = Type::Ground;
 	std::vector<Entity>* builderVector = &currentLevel.grounds;
-	sf::RectangleShape builderIndicator;
-	builderIndicator.setSize(builderSize);
+	sf::RectangleShape builderIndicator{builderSize};
 	builderIndicator.setFillColor(sf::Color{0, 0, 100, 120});
 	builderIndicator.setOrigin(builderSize.x / 2, builderSize.y / 2);
 #endif //DEBUG
@@ -49,7 +31,8 @@ int main()
 			player->moveLeft();
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 			player->moveRight();
-		if(sf::Keyboard::isKeyPressed(sf::Keyboard::W) && jumpTime.getElapsedTime() > sf::milliseconds(500) && player->hasJumpLeft())
+		if(sf::Keyboard::isKeyPressed(sf::Keyboard::W) 
+		&& jumpTime.getElapsedTime() > sf::milliseconds(500) && player->hasJumpLeft()) ///TODO combine into canJump()
 		{
 			jumpTime.restart();
 			player->jump();
@@ -96,27 +79,27 @@ int main()
 					builderIndicator.setFillColor(sf::Color{100, 0, 0, 120});
 				}
 			}
-			if(sf::Keyboard::isKeyPressed(sf::Keyboard::LBracket))
+			if(sf::Keyboard::isKeyPressed(sf::Keyboard::LBracket) && builderSize.x > 32)
 			{
-				builderSize.x -= 16;
+				builderSize.x -= 32;
 				builderIndicator.setSize(builderSize);
 				builderIndicator.setOrigin(builderSize.x / 2, builderSize.y / 2);
 			}
 			if(sf::Keyboard::isKeyPressed(sf::Keyboard::RBracket))
 			{
-				builderSize.x += 16;
+				builderSize.x += 32;
 				builderIndicator.setSize(builderSize);
 				builderIndicator.setOrigin(builderSize.x / 2, builderSize.y / 2);
 			}
-			if(sf::Keyboard::isKeyPressed(sf::Keyboard::Comma))
+			if(sf::Keyboard::isKeyPressed(sf::Keyboard::Comma) && builderSize.y > 32)
 			{
-				builderSize.y -= 16;
+				builderSize.y -= 32;
 				builderIndicator.setSize(builderSize);
 				builderIndicator.setOrigin(builderSize.x / 2, builderSize.y / 2);
 			}
 			if(sf::Keyboard::isKeyPressed(sf::Keyboard::Period))
 			{
-				builderSize.y += 16;
+				builderSize.y += 32;
 				builderIndicator.setSize(builderSize);
 				builderIndicator.setOrigin(builderSize.x / 2, builderSize.y / 2);
 			}
@@ -127,12 +110,12 @@ int main()
 			window.close();
 		}
 		world.Step(1/60.f, 8, 3);
-		manageCollision(currentLevel);
+		currentLevel.update();
 		window.clear();
 #ifdef DEBUG
 		window.draw(builderIndicator);
 #endif
-		drawLevel(currentLevel, window);
+		window.draw(currentLevel);
 		window.display();
 	}
 	///Program ended

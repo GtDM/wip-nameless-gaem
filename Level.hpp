@@ -7,10 +7,10 @@
 #include "Entity.hpp"
 #include <fstream>
 
-class Level
+class Level: public sf::Drawable
 {
 public:
-	Level(b2World& world, std::string n);
+	Level(b2World& world, std::string n); ///TODO simplify Level's constructor
 	Level(b2World& world, std::ifstream& in, std::string n);
 	Level(b2World& world, std::string path, std::string n);
 	~Level();
@@ -20,12 +20,13 @@ public:
 	void saveToFile(std::string path);
 	void setName(std::string);
 	const std::string getName() const;
+	void update();
 	std::vector<Entity> heroes;
 	std::vector<Entity> grounds;
 private:
 	std::string name;
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+	void manageCollision();
 };
-
-void drawLevel(Level level, sf::RenderWindow& window);
 
 #endif // LEVEL_HPP
