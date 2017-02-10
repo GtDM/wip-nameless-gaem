@@ -88,7 +88,7 @@ void Level::saveToStream(std::ofstream& out)
 	{
 		out << 'h' << " " <<
 		entity.getSize().x << " " << entity.getSize().y << " " <<
-		entity.getPosition().x << " " << entity.getPosition().y << "\n";
+		entity.getBody()->GetPosition().x  * SCALE << " " << entity.getBody()->GetPosition().y  * SCALE  << "\n";
 	}
 	for(const auto &entity : grounds) ///Save every ground
 	{
