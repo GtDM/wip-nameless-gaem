@@ -20,7 +20,9 @@ It's a work in progress, it has no name and it might turn out to be a gaem.
 - ,.[] - Change a Size of the Entity
 
 Currently loading a map that doesn't exist is not recommended
+
 That build status will keep failing until someone will link box2d and sfml inside the project
+
 Also, it should be split into directories, but it's WIP as everything else.
 
 #Have a nice day or night
