@@ -1,15 +1,12 @@
-#define DEBUG
-
 #include <SFML/Graphics.hpp>
 #include <Box2D/Box2D.h>
 #include <iostream>
 #include <vector>
 #include "Entity.hpp"
 #include "Level.hpp"
-
-#ifdef DEBUG ///TODO Somehow cleanup the ifdef mess
 #include "Debug.hpp"
-#endif
+
+constexpr bool DEBUG{false};
 
 int main()
 {
@@ -20,10 +17,8 @@ int main()
 	Entity* player = &currentLevel.heroes[0];
 	player->setFillColor(sf::Color::Magenta);
 	sf::Clock jumpTime;
-#ifdef DEBUG
-	Debug* debug = Debug::Instance();
-	debug->setLevel(&currentLevel);
-#endif //DEBUG
+	if constexpr(DEBUG)
+		Debug::Instance()->setLevel(&currentLevel);
 	while(window.isOpen())
 	{
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
@@ -34,23 +29,22 @@ int main()
 			player->jump(jumpTime);
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 			window.close();
-#ifdef DEBUG
-		if(!debug->isOnCooldown())
-			debug->handleEvents(world, player);
-#endif
+		if constexpr(DEBUG)
+		{
+			if(!Debug::Instance()->isOnCooldown())
+				Debug::Instance()->handleEvents(world, player);
+		}
 		world.Step(1/60.f, 8, 3);
 		currentLevel.update();
 		window.clear();
-#ifdef DEBUG
-		window.draw(*debug);
-#endif
+		if constexpr(DEBUG)
+			window.draw(*Debug::Instance());
 		window.draw(currentLevel);
 		window.display();
 	}
 	///Program ended
-#ifdef DEBUG
-	Debug::Release();
-#endif
+	if constexpr(DEBUG)
+		Debug::Release();
 	return 0;
 }
 

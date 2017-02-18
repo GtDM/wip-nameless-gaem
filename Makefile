@@ -1,5 +1,5 @@
 CC = clang++
-CFLAGS  = -g -O0 -std=c++14 -Wall
+CFLAGS  = -g -O0 -std=c++1z -Wall
 
 default: noname
 

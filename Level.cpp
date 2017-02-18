@@ -2,8 +2,7 @@
 
 Level::Level(b2World& world, std::string n)
 {
-	std::ifstream in("levels/default.ams");
-	if(!in)
+	if(std::ifstream in("levels/default.ams"); !in)
 	{	
 		createNewEntity(world, {32, 32}, {748.782, 778.55}, heroes, Type::Hero);
 		createNewEntity(world, {50, 68}, {1237, 440.55}, heroes, Type::Hero);

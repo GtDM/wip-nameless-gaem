@@ -1,7 +1,6 @@
 #include "Debug.hpp"
-#include <cstdlib> // NULL 
 
-Debug* Debug::ms_instance = NULL;
+Debug* Debug::ms_instance = nullptr;
 
 Debug::Debug()
 {
@@ -15,7 +14,8 @@ Debug::~Debug()
 
 Debug* Debug::Instance()
 {
-	if (ms_instance == nullptr) {
+	if(ms_instance == nullptr)
+	{
 		ms_instance = new Debug();
 	}
 	return ms_instance;
@@ -23,10 +23,11 @@ Debug* Debug::Instance()
 
 void Debug::Release()
 {
-	if (ms_instance) {
+	if(ms_instance)
+	{
 		delete ms_instance;
 	}
-	ms_instance = NULL;
+	ms_instance = nullptr;
 }
 
 void Debug::draw(sf::RenderTarget& target, sf::RenderStates states) const
@@ -103,7 +104,7 @@ void Debug::handleEvents(b2World& world, Entity* player)
 	}
 }
 
-bool Debug::isOnCooldown()
+bool Debug::isOnCooldown() const
 {
 	return debugTime.getElapsedTime() < sf::milliseconds(500);
 }

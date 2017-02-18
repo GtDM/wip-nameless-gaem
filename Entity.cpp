@@ -75,7 +75,7 @@ void createNewEntity(b2World& world, sf::Vector2f size, sf::Vector2f position, s
 			bodyDef.type = b2_dynamicBody;
 			bodyDef.fixedRotation = true;
 			fixtureDef.density = 1.f;
-			fixtureDef.friction = 0.05f;
+			fixtureDef.friction = 0.75f;
 			break;
 		}
 		case Type::Ground:

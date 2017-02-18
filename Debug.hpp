@@ -14,7 +14,7 @@ public:
 	static Debug* Instance();
 	static void Release();
 	void handleEvents(b2World& world, Entity* player);
-	bool isOnCooldown();
+	bool isOnCooldown() const;
 	void setLevel(Level* level);
 
 private:
