@@ -6,6 +6,9 @@ Debug::Debug()
 {
 	builderIndicator.setFillColor(sf::Color{0, 0, 100, 120});
 	builderIndicator.setOrigin(builderSize.x / 2, builderSize.y / 2);
+	font.loadFromFile("/usr/share/fonts/TTF/DejaVuSans.ttf");
+	debugText.setFont(font);
+	debugText.setString("DEBUG is ON!\n");
 }
 
 Debug::~Debug()
@@ -33,9 +36,10 @@ void Debug::Release()
 void Debug::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(builderIndicator, states);
+	target.draw(debugText, states);
 }
 
-void Debug::handleEvents(b2World& world, Entity* player)
+void Debug::handleEvents(b2World& world, std::shared_ptr<Entity> player)
 {
 	sf::Vector2f mouse_position(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y);
 	builderIndicator.setPosition(mouse_position);
@@ -47,7 +51,7 @@ void Debug::handleEvents(b2World& world, Entity* player)
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::N))
 	{
 		levelPointer->loadFromFile(world, "levels/map1.ams");
-		player = &levelPointer->heroes[0];
+		player = levelPointer->heroes[0];
 		player->setFillColor(sf::Color::Magenta);
 		debugTime.restart();
 	}
@@ -55,13 +59,13 @@ void Debug::handleEvents(b2World& world, Entity* player)
 	{
 		if(builderType == Type::Hero)
 		{
-			levelPointer->heroes.push_back(Entity(world, builderSize, mouse_position, Type::Hero));
-			player = &levelPointer->heroes[0];
+			levelPointer->heroes.push_back(std::make_shared<Entity>(world, builderSize, mouse_position, Type::Hero));
+			player = levelPointer->heroes[0];
 			player->setFillColor(sf::Color::Magenta);
 		}
 		else
 		{
-			levelPointer->grounds.push_back(Entity(world, builderSize, mouse_position, Type::Ground));
+			levelPointer->grounds.push_back(std::make_shared<Entity>(world, builderSize, mouse_position, Type::Ground));
 		}
 		debugTime.restart();
 	}

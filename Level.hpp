@@ -21,8 +21,8 @@ public:
 	void setName(std::string);
 	const std::string getName() const;
 	void update();
-	std::vector<Entity> heroes;
-	std::vector<Entity> grounds;
+	std::vector<std::shared_ptr<Entity>> heroes;
+	std::vector<std::shared_ptr<Entity>> grounds;
 private:
 	std::string name;
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;

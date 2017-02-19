@@ -4,14 +4,14 @@ Level::Level(b2World& world, std::string n)
 {
 	if(std::ifstream in("levels/default.ams"); !in)
 	{	
-		heroes.push_back(Entity(world, Size{32, 32}, Position{748.782, 778.55}, Type::Hero));
-		heroes.push_back(Entity(world, Size{50, 68}, Position{1237, 440.55}, Type::Hero));
-		grounds.push_back(Entity(world, Size{800, 10}, Position{800, 800}, Type::Ground));
-		grounds.push_back(Entity(world, Size{18, 100}, Position{546, 690}, Type::Ground));
-		grounds.push_back(Entity(world, Size{18, 20}, Position{551, 593}, Type::Ground));
-		grounds.push_back(Entity(world, Size{14, 284}, Position{1027, 498}, Type::Ground));
-		grounds.push_back(Entity(world, Size{306, 16}, Position{1158, 481}, Type::Ground));
-		grounds.push_back(Entity(world, Size{178, 16}, Position{1277, 688}, Type::Ground));
+		heroes.emplace_back(std::make_shared<Entity>(world, Size{32, 32}, Position{748.782, 778.55}, Type::Hero));
+		heroes.emplace_back(std::make_shared<Entity>(world, Size{50, 68}, Position{1237, 440.55}, Type::Hero));
+		grounds.emplace_back(std::make_shared<Entity>(world, Size{800, 10}, Position{800, 800}, Type::Ground));
+		grounds.emplace_back(std::make_shared<Entity>(world, Size{18, 100}, Position{546, 690}, Type::Ground));
+		grounds.emplace_back(std::make_shared<Entity>(world, Size{18, 20}, Position{551, 593}, Type::Ground));
+		grounds.emplace_back(std::make_shared<Entity>(world, Size{14, 284}, Position{1027, 498}, Type::Ground));
+		grounds.emplace_back(std::make_shared<Entity>(world, Size{306, 16}, Position{1158, 481}, Type::Ground));
+		grounds.emplace_back(std::make_shared<Entity>(world, Size{178, 16}, Position{1277, 688}, Type::Ground));
 		saveToFile("levels/default.ams");
 	}
 	else 
@@ -35,19 +35,14 @@ Level::Level(b2World& world, std::string path, std::string n)
 
 Level::~Level()
 {
-	
+	heroes.clear();
+	grounds.clear();
 }
 
 void Level::loadFromStream(b2World& world, std::ifstream& in)
 {
 	heroes.clear();
 	grounds.clear();
-	for(b2Body* next = world.GetBodyList(); next != nullptr;) ///TODO This loop looks ugly
-	{
-		b2Body* entity = next;
-		next = next->GetNext();
-		world.DestroyBody(entity);
-	}
 	std::size_t entitiesNumber;
 	in >> entitiesNumber;
 	///Load name
@@ -59,11 +54,11 @@ void Level::loadFromStream(b2World& world, std::ifstream& in)
 		in >> type_c >> size.x >> size.y >> position.x >> position.y;
 		if(type_c == 'h')
 		{
-			heroes.emplace_back(Entity(world, size, position, Type::Hero));
+			heroes.emplace_back(std::make_shared<Entity>(world, size, position, Type::Hero));
 		}
 		if(type_c == 'g')
 		{
-			grounds.emplace_back(Entity(world, size, position, Type::Ground));
+			grounds.emplace_back(std::make_shared<Entity>(world, size, position, Type::Ground));
 		}
 	}
 }
@@ -91,14 +86,14 @@ void Level::saveToStream(std::ofstream& out)
 	for(const auto &entity : heroes) ///Save every hero
 	{
 		out << 'h' << " " <<
-		entity.getSize().x << " " << entity.getSize().y << " " <<
-		entity.getBody()->GetPosition().x  * SCALE << " " << entity.getBody()->GetPosition().y  * SCALE  << "\n";
+		entity->getSize().x << " " << entity->getSize().y << " " <<
+		entity->getBody()->GetPosition().x  * SCALE << " " << entity->getBody()->GetPosition().y  * SCALE  << "\n";
 	}
 	for(const auto &entity : grounds) ///Save every ground
 	{
 		out << 'g' << " " << 
-		entity.getSize().x << " " << entity.getSize().y << " " <<
-		entity.getPosition().x << " " << entity.getPosition().y << "\n";
+		entity->getSize().x << " " << entity->getSize().y << " " <<
+		entity->getPosition().x << " " << entity->getPosition().y << "\n";
 	}
 }
 
@@ -116,20 +111,20 @@ void Level::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	for(const auto& entity : grounds)
 	{
-		target.draw(entity, states);
+		target.draw(*entity, states);
 	}
 	for(const auto& entity : heroes)
 	{
-		target.draw(entity, states);
+		target.draw(*entity, states);
 	}
 }
 
 void Level::update()
 {
 	for(auto& entity : grounds)
-		entity.setPosition(SCALE * entity.getBody()->GetPosition().x, SCALE * entity.getBody()->GetPosition().y);
+		entity->setPosition(SCALE * entity->getBody()->GetPosition().x, SCALE * entity->getBody()->GetPosition().y);
 	for(auto& entity : heroes)
-		entity.setPosition(SCALE * entity.getBody()->GetPosition().x, SCALE * entity.getBody()->GetPosition().y);
+		entity->setPosition(SCALE * entity->getBody()->GetPosition().x, SCALE * entity->getBody()->GetPosition().y);
 	manageCollision();
 }
 
@@ -137,12 +132,12 @@ void Level::manageCollision()
 {
 	for(auto &x : heroes)
 	{
-		b2Fixture* fixtureIterator = x.getBody()->GetFixtureList();
+		b2Fixture* fixtureIterator = x->getBody()->GetFixtureList();
 		for(const auto &y : grounds)
 		{
-			if(b2TestOverlap(fixtureIterator->GetAABB(0), y.getBody()->GetFixtureList()->GetAABB(0))) ///TODO sensors
+			if(b2TestOverlap(fixtureIterator->GetAABB(0), y->getBody()->GetFixtureList()->GetAABB(0))) ///TODO sensors
 			{
-				x.resetJumpNumber();
+				x->resetJumpNumber();
 			}
 		}
 	}

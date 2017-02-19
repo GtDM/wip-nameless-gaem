@@ -5,7 +5,7 @@
 #include <Box2D/Box2D.h>
 #include <iostream>
 
-static const float SCALE = 30.f;
+static constexpr float SCALE = 30.f;
 
 enum class Type
 {
@@ -31,8 +31,8 @@ class Entity: public sf::RectangleShape
 		void moveRight();
 	private:
 		b2Body* body_ptr = nullptr;
-		Type type = Type::Ground;
-		int current_jump_number = 0;
+		Type type{Type::Ground};
+		int current_jump_number{0};
 		constexpr static int maxJumpNumber{2};
 };
 

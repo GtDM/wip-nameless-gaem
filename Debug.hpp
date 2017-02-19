@@ -13,7 +13,7 @@ class Debug : public sf::Drawable
 public:
 	static Debug* Instance();
 	static void Release();
-	void handleEvents(b2World& world, Entity* player);
+	void handleEvents(b2World& world, std::shared_ptr<Entity> player);
 	bool isOnCooldown() const;
 	void setLevel(Level* level);
 
@@ -26,6 +26,8 @@ private:
 	Type builderType{Type::Ground};
 	sf::RectangleShape builderIndicator{builderSize};
 	Level* levelPointer;
+	sf::Font font;
+	sf::Text debugText;
 };
 
 #endif // DEBUG_HPP

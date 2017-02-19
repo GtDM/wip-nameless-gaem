@@ -46,7 +46,7 @@ Entity::Entity(b2World& world, Size size, Position position, Type t)
 
 Entity::~Entity()
 {
-	//std::cout << getPosition().x << " " << getPosition().y << "\n";
+	body_ptr->GetWorld()->DestroyBody(body_ptr);
 }
 
 void Entity::setBodyPointer(b2Body* ptr)

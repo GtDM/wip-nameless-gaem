@@ -14,7 +14,7 @@ int main()
 	window.setFramerateLimit(60);
 	b2World world(b2Vec2{0.f, 9.8f});
 	Level currentLevel(world, "default_level");
-	Entity* player = &currentLevel.heroes[0];
+	std::shared_ptr<Entity> player = currentLevel.heroes[0];
 	player->setFillColor(sf::Color::Magenta);
 	sf::Clock jumpTime;
 	if constexpr(DEBUG)
@@ -31,8 +31,10 @@ int main()
 			window.close();
 		if constexpr(DEBUG)
 		{
+			player = nullptr;
 			if(!Debug::Instance()->isOnCooldown())
 				Debug::Instance()->handleEvents(world, player);
+			player = currentLevel.heroes[0];
 		}
 		world.Step(1/60.f, 8, 3);
 		currentLevel.update();
