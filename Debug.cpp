@@ -55,13 +55,13 @@ void Debug::handleEvents(b2World& world, Entity* player)
 	{
 		if(builderType == Type::Hero)
 		{
-			createNewEntity(world, builderSize, mouse_position, levelPointer->heroes, Type::Hero);
+			levelPointer->heroes.push_back(Entity(world, builderSize, mouse_position, Type::Hero));
 			player = &levelPointer->heroes[0];
 			player->setFillColor(sf::Color::Magenta);
 		}
 		else
 		{
-			createNewEntity(world, builderSize, mouse_position, levelPointer->grounds, Type::Ground);
+			levelPointer->grounds.push_back(Entity(world, builderSize, mouse_position, Type::Ground));
 		}
 		debugTime.restart();
 	}

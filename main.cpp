@@ -6,7 +6,7 @@
 #include "Level.hpp"
 #include "Debug.hpp"
 
-constexpr bool DEBUG{false};
+constexpr bool DEBUG{true};
 
 int main()
 {
@@ -42,7 +42,6 @@ int main()
 		window.draw(currentLevel);
 		window.display();
 	}
-	///Program ended
 	if constexpr(DEBUG)
 		Debug::Release();
 	return 0;

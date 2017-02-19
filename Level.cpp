@@ -4,14 +4,14 @@ Level::Level(b2World& world, std::string n)
 {
 	if(std::ifstream in("levels/default.ams"); !in)
 	{	
-		createNewEntity(world, {32, 32}, {748.782, 778.55}, heroes, Type::Hero);
-		createNewEntity(world, {50, 68}, {1237, 440.55}, heroes, Type::Hero);
-		createNewEntity(world, {800, 10}, {800, 800}, grounds, Type::Ground);
-		createNewEntity(world, {18, 100}, {546, 690}, grounds, Type::Ground);
-		createNewEntity(world, {18, 20}, {551, 593}, grounds, Type::Ground);
-		createNewEntity(world, {14, 284}, {1027, 498}, grounds, Type::Ground);
-		createNewEntity(world, {306, 16}, {1158, 481}, grounds, Type::Ground);
-		createNewEntity(world, {178, 16}, {1277, 688}, grounds, Type::Ground);
+		heroes.push_back(Entity(world, Size{32, 32}, Position{748.782, 778.55}, Type::Hero));
+		heroes.push_back(Entity(world, Size{50, 68}, Position{1237, 440.55}, Type::Hero));
+		grounds.push_back(Entity(world, Size{800, 10}, Position{800, 800}, Type::Ground));
+		grounds.push_back(Entity(world, Size{18, 100}, Position{546, 690}, Type::Ground));
+		grounds.push_back(Entity(world, Size{18, 20}, Position{551, 593}, Type::Ground));
+		grounds.push_back(Entity(world, Size{14, 284}, Position{1027, 498}, Type::Ground));
+		grounds.push_back(Entity(world, Size{306, 16}, Position{1158, 481}, Type::Ground));
+		grounds.push_back(Entity(world, Size{178, 16}, Position{1277, 688}, Type::Ground));
 		saveToFile("levels/default.ams");
 	}
 	else 
@@ -35,6 +35,7 @@ Level::Level(b2World& world, std::string path, std::string n)
 
 Level::~Level()
 {
+	
 }
 
 void Level::loadFromStream(b2World& world, std::ifstream& in)
@@ -58,11 +59,11 @@ void Level::loadFromStream(b2World& world, std::ifstream& in)
 		in >> type_c >> size.x >> size.y >> position.x >> position.y;
 		if(type_c == 'h')
 		{
-			createNewEntity(world, size, position, heroes, Type::Hero);
+			heroes.emplace_back(Entity(world, size, position, Type::Hero));
 		}
 		if(type_c == 'g')
 		{
-			createNewEntity(world, size, position, grounds, Type::Ground);
+			grounds.emplace_back(Entity(world, size, position, Type::Ground));
 		}
 	}
 }

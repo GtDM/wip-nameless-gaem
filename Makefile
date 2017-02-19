@@ -1,10 +1,10 @@
 CC = clang++
 CFLAGS  = -g -O0 -std=c++1z -Wall
+OBJECTS = main.o Entity.o Level.o Debug.o
+LINKER_FLAGS = -lBox2D -lsfml-graphics -lsfml-window -lsfml-system
 
-default: noname
-
-noname:  main.o Entity.o Level.o Debug.o
-	$(CC) $(CFLAGS) -o ./wip-nameless-gaem main.o Entity.o Level.o Debug.o -lBox2D -lsfml-graphics -lsfml-window -lsfml-system
+default:  $(OBJECTS)
+	$(CC) $(CFLAGS) -o ./wip-nameless-gaem $(OBJECTS) $(LINKER_FLAGS)
 
 Entity.o:  Entity.cpp Entity.hpp 
 	$(CC) $(CFLAGS) -c Entity.cpp
