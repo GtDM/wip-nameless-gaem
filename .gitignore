@@ -4,3 +4,5 @@
 wip-nameless-gaem
 # Project File
 .project
+# Build directory
+build/
