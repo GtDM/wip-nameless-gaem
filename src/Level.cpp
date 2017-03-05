@@ -3,7 +3,7 @@
 Level::Level(b2World& world, std::string n)
 {
 	if(std::ifstream in("levels/default.ams"); !in)
-	{	
+	{
 		heroes.emplace_back(std::make_shared<Entity>(world, Size{32, 32}, Position{748.782, 778.55}, Type::Hero));
 		heroes.emplace_back(std::make_shared<Entity>(world, Size{50, 68}, Position{1237, 440.55}, Type::Hero));
 		grounds.emplace_back(std::make_shared<Entity>(world, Size{800, 10}, Position{800, 800}, Type::Ground));
